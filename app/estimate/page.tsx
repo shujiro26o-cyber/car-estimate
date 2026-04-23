@@ -56,7 +56,7 @@ export default function EstimatePage() {
     setResult(null);
 
     try {
-      const res = await fetch("http://localhost:8000/api/estimate", {
+      const res = await fetch("https://car-estimate-production.up.railway.app/api/estimate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
