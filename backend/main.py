@@ -37,10 +37,10 @@ class EstimateRequest(BaseModel):
 
 
 class EstimateResponse(BaseModel):
-    min_price: int
-    max_price: int
-    median_price: int
-    advice: str
+    min: int
+    max: int
+    median: int
+    count: int
 
 
 def _parse_prices_from_text(texts: list[str]) -> list[int]:
@@ -167,18 +167,17 @@ def estimate(req: EstimateRequest) -> EstimateResponse:
     prices = scrape_carsensor_prices(req)
 
     if len(prices) >= 5:
-        min_price = min(prices)
-        max_price = max(prices)
-        median_price = int(statistics.median(prices))
+        count = len(prices)
         source = "scraped"
     else:
-        min_price, max_price, median_price = calculate_mock_price(req)
+        prices_tuple = calculate_mock_price(req)
+        prices = list(prices_tuple)
+        count = 0
         source = "mock"
 
-    advice = build_advice(req, median_price, source)
     return EstimateResponse(
-        min_price=min_price,
-        max_price=max_price,
-        median_price=median_price,
-        advice=advice,
+        min=min(prices),
+        max=max(prices),
+        median=int(statistics.median(prices)),
+        count=count,
     )
